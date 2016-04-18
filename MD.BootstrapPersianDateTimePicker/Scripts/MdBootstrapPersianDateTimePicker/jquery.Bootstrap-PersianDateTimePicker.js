@@ -322,12 +322,15 @@
     // درست کردن اچ تی ام ال دیت تایم پیکر
     // مقدار برگشتی تعیین میکند آیا مقدار تاریخ باید به روز شود یا نه
     function createDateTimePickerHtml($popoverDescriber, dateTimeInJsonFormat, writeDateString, initializing) {
+        var englishnumberincalender = $popoverDescriber.data("englishnumberincalender");
         var triggerName = $popoverDescriber.attr('data-trigger'),
             persianTodayDateTemp = getTodayCalendarInPersian(), // تاریخ شمسی امروز
             currentYearNumber = persianTodayDateTemp[0],
             currentMonthNumber = persianTodayDateTemp[1],
             currentDayNumber = persianTodayDateTemp[2],
-            todayDateTimeString = 'امروز، ' + getPersianWeekDay(persianTodayDateTemp[2]) + ' ' + toPersianNumber(currentDayNumber) + ' ' + getPersianMonth(currentMonthNumber) + ' ' + toPersianNumber(currentYearNumber),
+            todayDateTimeString = 'امروز، ' + getPersianWeekDay(persianTodayDateTemp[2]) + ' ' +
+                 (englishnumberincalender ? currentDayNumber : toPersianNumber(currentDayNumber)) + ' ' + getPersianMonth(currentMonthNumber) + ' ' +
+                 (englishnumberincalender ? currentYearNumber : toPersianNumber(currentYearNumber)),
             $calendarMainTable = $('<table class="table table-striped" />'),
             $calendarHeader = $('<tr><td colspan="100" style="padding:5px;"><table class="table" data-name="Md-PersianDateTimePicker-HeaderTable"><tr><td><button type="button" class="btn btn-default btn-xs" title="سال بعد" data-name="Md-PersianDateTimePicker-NextYear">&lt;&lt;</button></td><td><button type="button" class="btn btn-default btn-xs" title="ماه بعد" data-name="Md-PersianDateTimePicker-NextMonth">&lt;</button></td><td><div class="dropdown" style="min-width:50px;"><button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuPersianYear" data-toggle="dropdown" aria-expanded="true" data-name="Md-PersianDateTimePicker-TitleYear">1393</button><ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuPersianYear"><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-YearNumber">1394</a></li></ul></div></td><td ><div class="dropdown" style="min-width:73px;"><button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuPersianMonths" data-toggle="dropdown" aria-expanded="true" data-name="Md-PersianDateTimePicker-TitleMonth">نام ماه</button><ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuPersianMonths"><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="1">فروردین</a></li><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="2">اردیبهشت</a></li><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="3">خرداد</a></li><li role="presentation" class="divider"></li><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="4">تیر</a></li><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="5">مرداد</a></li><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="6">شهریور</a></li><li role="presentation" class="divider"></li><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="7">مهر</a></li><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="8">آبان</a></li><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="9">آذر</a></li><li role="presentation" class="divider"></li><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="10">دی</a></li><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="11">بهمن</a></li><li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-MonthName" data-MonthNumber="12">اسفند</a></li></ul></div></td><td><button type="button" class="btn btn-default btn-xs" title="ماه قبل" data-name="Md-PersianDateTimePicker-PreviousMonth">&gt;</button></td><td><button type="button" class="btn btn-default btn-xs" title="سال قبل" data-name="Md-PersianDateTimePicker-PreviousYear">&gt;&gt;</button></td></tr></table></td></tr><tr data-name="Md-PersianDateTimePicker-WeekDaysNames"><td>ش</td><td>ی</td><td>د</td><td>س</td><td>چ</td><td>پ</td><td class="text-danger">ج</td></tr>'),
             $monthsTitlesDropDown = $calendarHeader.find('.dropdown-menu[aria-labelledby="dropdownMenuPersianMonths"]'),
@@ -366,7 +369,8 @@
 
         var yearForDropDown = dateTimeInJsonFormat == undefined ? currentYearNumber : dateTimeInJsonFormat.Year;
         for (var k = yearForDropDown - 5; k <= yearForDropDown + 5; k++) {
-            var $dropDownYear = $('<li role="presentation" data-year="' + k + '"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-YearNumber">' + toPersianNumber(k) + '</a></li>');
+            var $dropDownYear = $('<li role="presentation" data-year="' + k + '"><a role="menuitem" tabindex="-1" href="javascript:void(0);" data-name="Md-PersianDateTimePicker-YearNumber">' +
+                (englishnumberincalender ? k : toPersianNumber(k)) + '</a></li>');
             if (k == currentYearNumber)
                 $dropDownYear.addClass('bg-info');
             $yearDropDown.append($dropDownYear);
@@ -407,7 +411,7 @@
         // مثال: دی 1393
         var persianMonthName = getPersianMonth(dateTimeInJsonFormat.Month);
         $calendarHeader.find('[data-name="Md-PersianDateTimePicker-TitleMonth"]').html(persianMonthName);
-        $calendarHeader.find('[data-name="Md-PersianDateTimePicker-TitleYear"]').html(toPersianNumber(dateTimeInJsonFormat.Year));
+        $calendarHeader.find('[data-name="Md-PersianDateTimePicker-TitleYear"]').html((englishnumberincalender ? dateTimeInJsonFormat.Year : toPersianNumber(dateTimeInJsonFormat.Year)));
         $calendarMainTable.append($calendarHeader);
 
         // from date, to date
@@ -460,7 +464,7 @@
         // روز های ماه پیش
         if (firstWeekDayNumber != 1)
             for (i = firstWeekDayNumber - 2; i >= 0; i--) {
-                $tr.append($('<td data-name="disabled-day" />').html(toPersianNumber(zeroPad(numberOfDaysInPreviousMonth - i))));
+                $tr.append($('<td data-name="disabled-day" />').html((englishnumberincalender ? zeroPad(numberOfDaysInPreviousMonth - i) : toPersianNumber(zeroPad(numberOfDaysInPreviousMonth - i)))));
                 cellNumber++;
                 tdNumber++;
             }
@@ -474,26 +478,26 @@
                 $tr = $('<tr />');
             }
 
-            var dayNumberInString = toPersianNumber(zeroPad(i)),
+            var dayNumberInString = (englishnumberincalender ? zeroPad(i) : toPersianNumber(zeroPad(i))),
                 currentDateNumber = convertToNumber(dateTimeInJsonFormat.Year, dateTimeInJsonFormat.Month, i),
                 isToday = i == currentDayNumber && dateTimeInJsonFormat.Month == currentMonthNumber && dateTimeInJsonFormat.Year == currentYearNumber;
-                $td = $('<td data-name="day" />').html(dayNumberInString);
+            $td = $('<td data-name="day" />').html(dayNumberInString);
 
             // امروز
             if (isToday) {
                 $td.addClass('bg-primary').attr('data-name', 'today');
                 // اگر نام روز هفته انخاب شده در تکس باکس قبل از تاریخ امروز باشد
                 // نباید دیگر نام روز هفته تغییر کند
-                if (dayOfWeek == '') 
+                if (dayOfWeek == '')
                     dayOfWeek = getPersianWeekDay(tdNumber);
             }
-            // روز از قبل انتخاب شده
-            // روزی که در تکس باکس انتخاب شده
+                // روز از قبل انتخاب شده
+                // روزی که در تکس باکس انتخاب شده
             else if (i == dateTimeInJsonFormat.Day) {
                 $td.addClass('bg-info');
                 dayOfWeek = getPersianWeekDay(tdNumber);
             }
-            // روز جمعه
+                // روز جمعه
             else if (tdNumber > 0 && tdNumber % 6 == 0)
                 $td.addClass('text-danger');
 
@@ -584,7 +588,7 @@
                     $calendarMainTable.append($tr);
                     isTrAppended = true;
                 }
-                $tr.append($('<td data-name="disabled-day" />').html(toPersianNumber(zeroPad(i))));
+                $tr.append($('<td data-name="disabled-day" />').html((englishnumberincalender ? zeroPad(i) : toPersianNumber(zeroPad(i)))));
                 tdNumber++;
             }
         }
@@ -595,7 +599,7 @@
         $calendarDivWrapper.append($calendarMainTable);
 
         // عوض کردن عنوان popover
-        $('[data-name="Md-DateTimePicker-Title"]').html(dayOfWeek + '، ' + toPersianNumber(zeroPad(dateTimeInJsonFormat.Day)) + ' ' + persianMonthName + ' ' + toPersianNumber(zeroPad(dateTimeInJsonFormat.Year)));
+        $('[data-name="Md-DateTimePicker-Title"]').html(dayOfWeek + '، ' + (englishnumberincalender ? zeroPad(dateTimeInJsonFormat.Day) : toPersianNumber(zeroPad(dateTimeInJsonFormat.Day))) + ' ' + persianMonthName + ' ' + (englishnumberincalender ? zeroPad(dateTimeInJsonFormat.Year) : toPersianNumber(zeroPad(dateTimeInJsonFormat.Year))));
 
         // آیا محتویات تکس باکس باید تغییر کند ؟
         if (writeDateString) {
@@ -838,6 +842,8 @@
                     $this.attr('data-EnglishNumber', settings.EnglishNumber);
                 if (settings.Disabled)
                     $this.attr('data-disabled', true);
+                if (settings.englishNumberInCalender)
+                    $this.attr('data-englishNumberInCalender', true);
 
                 var initialDateTimeInJsonFormat = parsePreviousDateTimeValue($this.val()),
                     $calendarDivWrapper = createDateTimePickerHtml($this, initialDateTimeInJsonFormat, undefined, true);
@@ -860,8 +866,8 @@
                 });
             });
         },
-        disable: function(isDisable) {
-            return this.each(function() {
+        disable: function (isDisable) {
+            return this.each(function () {
                 var $this = $(this);
                 $this.attr('data-disabled', isDisable);
             });
@@ -935,7 +941,7 @@
                 groupId = $this.attr('data-GroupId'),
                 toDate = $this.attr('data-ToDate'),
                 fromDate = $this.attr('data-FromDate');
-                disable = $this.attr('data-disabled') != undefined && $this.attr('data-disabled').toLowerCase() == 'true';
+            disable = $this.attr('data-disabled') != undefined && $this.attr('data-disabled').toLowerCase() == 'true';
             if (!$this.is(':input') && $this.css('cursor') == 'auto')
                 $this.css({ cursor: 'pointer' });
             $this.MdPersianDateTimePicker({
